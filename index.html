@@ -2,63 +2,55 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Site</title>
+    <title>Nhận Code Mini World</title>
     <style>
-        /* CSS: Giao diện tối hiện đại */
-        body { background-color: #0b0e14; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
-        .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        
-        /* Container chứa các item, ẩn những cái quá khung hình */
-        .carousel-container { display: flex; overflow-x: hidden; gap: 20px; padding: 10px; position: relative; }
-        .item-card { background: #1a202c; min-width: 200px; padding: 15px; border-radius: 12px; border: 1px solid #2d3748; }
-        .item-img { width: 100%; height: 120px; background: #2d3748; border-radius: 8px; margin-bottom: 10px; }
-
-        /* Nút mũi tên */
-        .arrow-btn { background: #333; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 50%; font-size: 18px; }
+        body { background: #1a1a2e; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 400px; margin: auto; background: #16213e; padding: 20px; border-radius: 15px; }
+        .item-box { border: 2px solid #0f3460; padding: 15px; margin: 15px 0; border-radius: 10px; }
+        img { width: 100px; height: 100px; border-radius: 10px; }
+        button { padding: 10px 15px; cursor: pointer; border: none; border-radius: 5px; background: #e94560; color: white; font-weight: bold; }
+        input { padding: 10px; width: 80%; margin-bottom: 10px; border-radius: 5px; border: none; }
     </style>
 </head>
 <body>
 
-    <div class="section-title">
-        <h2>Vũ khí mới nhất</h2>
-        <button class="arrow-btn" onclick="moveCarousel(1)">→</button>
+<div class="container" id="login-box">
+    <h2>Đăng nhập Mini World</h2>
+    <input type="text" id="mw-id" placeholder="Nhập Mini World ID của bạn">
+    <button onclick="login()">Đăng nhập</button>
+</div>
+
+<div class="container" id="code-box" style="display:none;">
+    <h2>Nhận Code Vật Phẩm</h2>
+    
+    <div class="item-box">
+        <img src="https://i.imgur.com/1000011410.png" alt="Ice Fan"> <p>Quạt Băng</p>
+        <code id="code1">icefan2026</code>
+        <button onclick="copyCode('code1')">Copy Code</button>
     </div>
 
-    <div class="carousel-container" id="carousel">
-        <div class="item-card">
-            <div class="item-img" style="background: linear-gradient(to right, #6a11cb, #2575fc);"></div>
-            <h3>Dao Âm Dương</h3>
-            <p>Giá trị: 10.000</p>
-        </div>
-        <div class="item-card">
-            <div class="item-img" style="background: linear-gradient(to right, #ff7e5f, #feb47b);"></div>
-            <h3>Quạt Nước</h3>
-            <p>Giá trị: 8.915</p>
-        </div>
-        <div class="item-card">
-            <div class="item-img" style="background: linear-gradient(to right, #00c6ff, #0072ff);"></div>
-            <h3>Kiếm Phép</h3>
-            <p>Giá trị: 15.200</p>
-        </div>
+    <div class="item-box">
+        <img src="https://i.imgur.com/1000011411.png" alt="Egg Fan"> <p>Quạt Trứng</p>
+        <code id="code2">eggfanupd2026</code>
+        <button onclick="copyCode('code2')">Copy Code</button>
     </div>
+</div>
 
 <script>
-    // JS: Xử lý cuộn mượt
-    let scrollPosition = 0;
-    const container = document.getElementById('carousel');
+    function login() {
+        let id = document.getElementById('mw-id').value;
+        if(id) {
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('code-box').style.display = 'block';
+        } else {
+            alert("Vui lòng nhập ID!");
+        }
+    }
 
-    function moveCarousel(direction) {
-        const itemWidth = 220; // Độ rộng 1 item + gap
-        scrollPosition += direction * itemWidth;
-        
-        // Giới hạn cuộn không để bị âm hoặc quá xa
-        if (scrollPosition < 0) scrollPosition = 0;
-        
-        container.scrollTo({
-            left: scrollPosition,
-            behavior: 'smooth' // Làm cho việc di chuyển mượt mà
-        });
+    function copyCode(id) {
+        let text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text);
+        alert("Đã copy: " + text);
     }
 </script>
 </body>
