@@ -2,74 +2,64 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Vòng Quay Blox Fruits - Pro Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Site</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #2c3e50; color: white; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        #wheel { width: 300px; height: 300px; border: 10px solid #f1c40f; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; background: #ecf0f1; color: #333; font-weight: bold; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-        .controls { background: #34495e; padding: 15px; border-radius: 10px; margin-top: 20px; }
-        input { padding: 8px; width: 80px; }
-        button { padding: 10px 20px; cursor: pointer; background: #e74c3c; border: none; color: white; border-radius: 5px; }
+        /* CSS: Giao diện tối hiện đại */
+        body { background-color: #0b0e14; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+        .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        
+        /* Container chứa các item, ẩn những cái quá khung hình */
+        .carousel-container { display: flex; overflow-x: hidden; gap: 20px; padding: 10px; position: relative; }
+        .item-card { background: #1a202c; min-width: 200px; padding: 15px; border-radius: 12px; border: 1px solid #2d3748; }
+        .item-img { width: 100%; height: 120px; background: #2d3748; border-radius: 8px; margin-bottom: 10px; }
+
+        /* Nút mũi tên */
+        .arrow-btn { background: #333; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 50%; font-size: 18px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Vòng Quay Blox Fruits</h1>
-    <div id="wheel">Vật phẩm</div>
-    
-    <div class="controls">
-        <h3>Cấu hình vòng quay</h3>
-        <input type="text" id="itemName" placeholder="Tên vật phẩm">
-        <input type="number" id="itemRate" placeholder="Tỉ lệ %">
-        <input type="text" id="imgUrl" placeholder="Link ảnh">
-        <button onclick="addItem()">Thêm vào vòng</button>
-        <br><br>
-        <button onclick="spin()" style="background:#2ecc71; font-size: 20px;">QUAY NGAY</button>
+    <div class="section-title">
+        <h2>Vũ khí mới nhất</h2>
+        <button class="arrow-btn" onclick="moveCarousel(1)">→</button>
     </div>
-</div>
+
+    <div class="carousel-container" id="carousel">
+        <div class="item-card">
+            <div class="item-img" style="background: linear-gradient(to right, #6a11cb, #2575fc);"></div>
+            <h3>Dao Âm Dương</h3>
+            <p>Giá trị: 10.000</p>
+        </div>
+        <div class="item-card">
+            <div class="item-img" style="background: linear-gradient(to right, #ff7e5f, #feb47b);"></div>
+            <h3>Quạt Nước</h3>
+            <p>Giá trị: 8.915</p>
+        </div>
+        <div class="item-card">
+            <div class="item-img" style="background: linear-gradient(to right, #00c6ff, #0072ff);"></div>
+            <h3>Kiếm Phép</h3>
+            <p>Giá trị: 15.200</p>
+        </div>
+    </div>
 
 <script>
-    let items = []; // Lưu trữ vật phẩm và tỉ lệ
+    // JS: Xử lý cuộn mượt
+    let scrollPosition = 0;
+    const container = document.getElementById('carousel');
 
-    function addItem() {
-        let name = document.getElementById('itemName').value;
-        let rate = parseFloat(document.getElementById('itemRate').value);
-        let img = document.getElementById('imgUrl').value;
+    function moveCarousel(direction) {
+        const itemWidth = 220; // Độ rộng 1 item + gap
+        scrollPosition += direction * itemWidth;
         
-        items.push({ name, rate, img });
-        alert("Đã thêm: " + name + " với tỉ lệ " + rate + "%");
-    }
-
-    function spin() {
-        if(items.length === 0) return alert("Thêm vật phẩm đi đã!");
+        // Giới hạn cuộn không để bị âm hoặc quá xa
+        if (scrollPosition < 0) scrollPosition = 0;
         
-        const wheel = document.getElementById('wheel');
-        let random = Math.random() * 100; // Random từ 0-100
-        let currentRate = 0;
-        let selectedItem = null;
-
-        // Thuật toán tính tỉ lệ chuẩn xác
-        for(let item of items) {
-            currentRate += item.rate;
-            if(random <= currentRate) {
-                selectedItem = item;
-                break;
-            }
-        }
-
-        // Tạo hiệu ứng xoay mượt
-        let rotation = 3600 + Math.floor(Math.random() * 360); 
-        wheel.style.transform = `rotate(${rotation}deg)`;
-
-        setTimeout(() => {
-            if(selectedItem) {
-                wheel.innerHTML = `<img src="${selectedItem.img}" width="50"><br>${selectedItem.name}`;
-                alert("Chúc mừng mày trúng: " + selectedItem.name);
-            }
-        }, 4000);
+        container.scrollTo({
+            left: scrollPosition,
+            behavior: 'smooth' // Làm cho việc di chuyển mượt mà
+        });
     }
 </script>
-
 </body>
 </html>
