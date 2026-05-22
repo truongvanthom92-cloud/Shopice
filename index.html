@@ -2,71 +2,72 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blox Fruits shop ice</title>
+    <title>Vòng Quay Blox Fruits - Pro Simulation</title>
     <style>
-        /* CSS: Giao diện */
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #eef2f3; padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        .disclaimer { color: #d9534f; font-weight: bold; font-size: 0.85em; margin-bottom: 20px; }
-        button { padding: 12px 20px; margin: 10px; cursor: pointer; border: none; background: #28a745; color: white; border-radius: 8px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #218838; }
-        #result-area { margin-top: 20px; padding: 20px; border: 2px dashed #ccc; border-radius: 10px; min-height: 100px; }
-        .login-box { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        body { font-family: sans-serif; text-align: center; background: #2c3e50; color: white; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        #wheel { width: 300px; height: 300px; border: 10px solid #f1c40f; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; background: #ecf0f1; color: #333; font-weight: bold; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
+        .controls { background: #34495e; padding: 15px; border-radius: 10px; margin-top: 20px; }
+        input { padding: 8px; width: 80px; }
+        button { padding: 10px 20px; cursor: pointer; background: #e74c3c; border: none; color: white; border-radius: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="login-box" id="login-section">
-        <h3>Đăng nhập (Giả lập)</h3>
-        <input type="text" id="username" placeholder="Nhập tên Roblox của bạn">
-        <button onclick="login()">Đăng nhập</button>
-    </div>
-
-    <h1>Blox Fruits Simulator</h1>
-    <p class="disclaimer">Trang web này chỉ để giải trí, mọi vật phẩm đều là ảo!</p>
+    <h1>Vòng Quay Blox Fruits</h1>
+    <div id="wheel">Vật phẩm</div>
     
-    <div id="game-section" style="display:none;">
-        <p>Chào mừng: <span id="display-user"></span></p>
-        <button onclick="openBox('Tân Thủ')">Mở Túi Tân Thủ</button>
-        <button onclick="openBox('Huyền Bí')">Mở Túi Huyền Bí</button>
-        <div id="result-area">Chọn túi để bắt đầu quay!</div>
+    <div class="controls">
+        <h3>Cấu hình vòng quay</h3>
+        <input type="text" id="itemName" placeholder="Tên vật phẩm">
+        <input type="number" id="itemRate" placeholder="Tỉ lệ %">
+        <input type="text" id="imgUrl" placeholder="Link ảnh">
+        <button onclick="addItem()">Thêm vào vòng</button>
+        <br><br>
+        <button onclick="spin()" style="background:#2ecc71; font-size: 20px;">QUAY NGAY</button>
     </div>
 </div>
 
 <script>
-    // JS: Logic xử lý
-    function login() {
-        const user = document.getElementById('username').value;
-        if(user.trim() !== "") {
-            document.getElementById('display-user').innerText = user;
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('game-section').style.display = 'block';
-        } else {
-            alert("Vui lòng nhập tên!");
-        }
+    let items = []; // Lưu trữ vật phẩm và tỉ lệ
+
+    function addItem() {
+        let name = document.getElementById('itemName').value;
+        let rate = parseFloat(document.getElementById('itemRate').value);
+        let img = document.getElementById('imgUrl').value;
+        
+        items.push({ name, rate, img });
+        alert("Đã thêm: " + name + " với tỉ lệ " + rate + "%");
     }
 
-    const items = {
-        'Tân Thủ': ['Rocket', 'Spin', 'Chop', 'Spring'],
-        'Huyền Bí': ['Love', 'Spider', 'T-Rex', 'Mammoth', 'Kitsune']
-    };
-
-    function openBox(type) {
-        const area = document.getElementById('result-area');
-        area.innerHTML = "Đang mở...";
+    function spin() {
+        if(items.length === 0) return alert("Thêm vật phẩm đi đã!");
         
+        const wheel = document.getElementById('wheel');
+        let random = Math.random() * 100; // Random từ 0-100
+        let currentRate = 0;
+        let selectedItem = null;
+
+        // Thuật toán tính tỉ lệ chuẩn xác
+        for(let item of items) {
+            currentRate += item.rate;
+            if(random <= currentRate) {
+                selectedItem = item;
+                break;
+            }
+        }
+
+        // Tạo hiệu ứng xoay mượt
+        let rotation = 3600 + Math.floor(Math.random() * 360); 
+        wheel.style.transform = `rotate(${rotation}deg)`;
+
         setTimeout(() => {
-            const list = items[type];
-            const item = list[Math.floor(Math.random() * list.length)];
-            area.innerHTML = `
-                <h3>Kết quả:</h3>
-                <p style="font-size: 20px; color: #007bff;"><strong>${item}</strong></p>
-                <button onclick="alert('Đã gửi yêu cầu rút về kho ảo!')">Rút vật phẩm về túi</button>
-            `;
-        }, 1000);
+            if(selectedItem) {
+                wheel.innerHTML = `<img src="${selectedItem.img}" width="50"><br>${selectedItem.name}`;
+                alert("Chúc mừng mày trúng: " + selectedItem.name);
+            }
+        }, 4000);
     }
 </script>
 
