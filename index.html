@@ -2,87 +2,86 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ice Roblox Studio - Script Hub</title>
+    <title>Roblox Shop Simulation Pro</title>
     <style>
-        /* CSS: Giao diện Dark Mode chuẩn Roblox */
-        body { margin: 0; background: #0c0f16; color: #fff; font-family: 'Segoe UI', sans-serif; }
-        header { padding: 25px; background: #161b22; display: flex; align-items: center; border-bottom: 3px solid #30363d; position: sticky; top: 0; z-index: 100; }
-        .logo { width: 45px; margin-right: 15px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 30px; }
+        body { background: #E5E5E5; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .shop-container { max-width: 900px; margin: auto; background: #FFF; border-radius: 8px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #E5E5E5; padding-bottom: 10px; }
         
-        .script-card { background: #1c2128; padding: 20px; border-radius: 12px; border: 1px solid #30363d; cursor: pointer; transition: 0.3s; }
-        .script-card:hover { border-color: #58a6ff; transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .script-card h3 { color: #58a6ff; margin-top: 0; }
-
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: #161b22; padding: 30px; border-radius: 15px; width: 90%; max-width: 700px; border: 1px solid #30363d; }
-        pre { background: #0d1117; padding: 20px; border-radius: 8px; color: #79c0ff; overflow-x: auto; font-family: monospace; border: 1px solid #30363d; }
+        .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .item-card { background: #F2F2F2; border: 1px solid #CCC; border-radius: 8px; padding: 15px; text-align: center; transition: 0.3s; }
+        .item-card:hover { transform: translateY(-5px); border-color: #0084DD; }
         
-        button { background: #238636; color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 10px; }
-        button:hover { background: #2ea043; }
-        .close-btn { background: #da3633; }
+        /* Modal Animation */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; animation: pop 0.3s ease; }
+        @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
-<header>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Roblox_logo_2017.png" class="logo">
-    <h1>Ice Roblox Studio</h1>
-</header>
+<div class="shop-container">
+    <div class="header">
+        <h1>Marketplace</h1>
+        <div id="balance" style="font-size: 20px; font-weight: bold;">💰 10000 Robux</div>
+    </div>
 
-<div class="grid" id="script-list"></div>
+    <div class="item-grid">
+        <div class="item-card">
+            <h3>Fire Sword</h3>
+            <div style="height:100px; background:linear-gradient(45deg, red, orange); border-radius:5px;"></div>
+            <p>Giá: 2000 Robux</p>
+            <button onclick="showConfirm(2000, 'Fire Sword')">Mua Ngay</button>
+        </div>
+        <div class="item-card">
+            <h3>Ice Wings</h3>
+            <div style="height:100px; background:linear-gradient(45deg, cyan, blue); border-radius:5px;"></div>
+            <p>Giá: 3500 Robux</p>
+            <button onclick="showConfirm(3500, 'Ice Wings')">Mua Ngay</button>
+        </div>
+    </div>
+</div>
 
-<div class="modal" id="modal">
+<div class="modal" id="confirm-modal">
     <div class="modal-content">
-        <h2 id="m-title">Title</h2>
-        <pre id="m-code"></pre>
-        <button onclick="copyModal()">Copy Code</button>
-        <button class="close-btn" onclick="closeModal()">Đóng</button>
+        <h2>Xác nhận mua?</h2>
+        <p id="confirm-text"></p>
+        <button onclick="buyItem()">Xác nhận</button>
+        <button onclick="closeModal()" style="background:red;">Hủy</button>
     </div>
 </div>
 
 <script>
-    // Danh sách 10 Script "Huyền thoại"
-    const scripts = [
-        { title: "Kill Part (Bẫy chết)", code: "script.Parent.Touched:Connect(function(hit)\n  local hum = hit.Parent:FindFirstChild('Humanoid')\n  if hum then hum.Health = 0 end\nend)" },
-        { title: "Speed Boost (Tăng tốc)", code: "script.Parent.Touched:Connect(function(hit)\n  local char = hit.Parent\n  local hum = char:FindFirstChild('Humanoid')\n  if hum then hum.WalkSpeed = 50 end\nend)" },
-        { title: "Heal Part (Hồi máu)", code: "script.Parent.Touched:Connect(function(hit)\n  local hum = hit.Parent:FindFirstChild('Humanoid')\n  if hum then hum.Health = hum.MaxHealth end\nend)" },
-        { title: "Invisible Part (Tàng hình)", code: "script.Parent.Transparency = 1\nscript.Parent.CanCollide = false" },
-        { title: "Spin Part (Vật thể xoay)", code: "while task.wait() do\n  script.Parent.CFrame = script.Parent.CFrame * CFrame.fromEulerAnglesXYZ(0, 0.1, 0)\nend" },
-        { title: "Spawn Tool (Lấy đồ)", code: "local tool = game.ServerStorage.Sword\nlocal cloned = tool:Clone()\ncloned.Parent = game.Players.LocalPlayer.Backpack" },
-        { title: "Leaderstats (Lưu tiền)", code: "game.Players.PlayerAdded:Connect(function(player)\n  local stats = Instance.new('Folder', player)\n  stats.Name = 'leaderstats'\n  local money = Instance.new('IntValue', stats)\n  money.Name = 'Money'\nend)" },
-        { title: "Gravity Changer", code: "workspace.Gravity = 50" },
-        { title: "Random Color", code: "script.Parent.Touched:Connect(function()\n  script.Parent.Color = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))\nend)" },
-        { title: "Fire Part (Lửa)", code: "local fire = Instance.new('Fire', script.Parent)" }
-    ];
+    let balance = 10000;
+    let pendingPrice = 0;
 
-    // Vẽ danh sách ra màn hình
-    const list = document.getElementById('script-list');
-    scripts.forEach((s, i) => {
-        list.innerHTML += `
-            <div class="script-card" onclick="openModal(${i})">
-                <h3>${s.title}</h3>
-                <p>Nhấn vào để xem và copy code...</p>
-            </div>
-        `;
-    });
-
-    function openModal(i) {
-        document.getElementById('m-title').innerText = scripts[i].title;
-        document.getElementById('m-code').innerText = scripts[i].code;
-        document.getElementById('modal').style.display = 'flex';
+    function showConfirm(price, name) {
+        pendingPrice = price;
+        document.getElementById('confirm-text').innerText = "Bạn muốn mua " + name + " với giá " + price + " Robux?";
+        document.getElementById('confirm-modal').style.display = 'flex';
     }
 
-    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function closeModal() { document.getElementById('confirm-modal').style.display = 'none'; }
 
-    function copyModal() {
-        const codeText = document.getElementById('m-code').innerText;
-        navigator.clipboard.writeText(codeText);
-        alert("Đã copy code vào bộ nhớ tạm!");
+    function buyItem() {
+        if(balance >= pendingPrice) {
+            balance -= pendingPrice;
+            updateUI();
+            alert("Mua thành công!");
+        } else {
+            alert("Không đủ tiền!");
+        }
+        closeModal();
+    }
+
+    function updateUI() {
+        if(balance < 500) { // Nếu tiền dưới 500 thì tự động reset về 10000
+            alert("Ví cạn kiệt! Hệ thống đang cộng thêm tiền...");
+            balance = 10000;
+        }
+        document.getElementById('balance').innerText = "💰 " + balance + " Robux";
     }
 </script>
-
 </body>
 </html>
+
