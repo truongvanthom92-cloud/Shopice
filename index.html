@@ -2,56 +2,87 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Nhận Code Mini World</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ice Roblox Studio - Script Hub</title>
     <style>
-        body { background: #1a1a2e; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
-        .container { max-width: 400px; margin: auto; background: #16213e; padding: 20px; border-radius: 15px; }
-        .item-box { border: 2px solid #0f3460; padding: 15px; margin: 15px 0; border-radius: 10px; }
-        img { width: 100px; height: 100px; border-radius: 10px; }
-        button { padding: 10px 15px; cursor: pointer; border: none; border-radius: 5px; background: #e94560; color: white; font-weight: bold; }
-        input { padding: 10px; width: 80%; margin-bottom: 10px; border-radius: 5px; border: none; }
+        /* CSS: Giao diện Dark Mode chuẩn Roblox */
+        body { margin: 0; background: #0c0f16; color: #fff; font-family: 'Segoe UI', sans-serif; }
+        header { padding: 25px; background: #161b22; display: flex; align-items: center; border-bottom: 3px solid #30363d; position: sticky; top: 0; z-index: 100; }
+        .logo { width: 45px; margin-right: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 30px; }
+        
+        .script-card { background: #1c2128; padding: 20px; border-radius: 12px; border: 1px solid #30363d; cursor: pointer; transition: 0.3s; }
+        .script-card:hover { border-color: #58a6ff; transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .script-card h3 { color: #58a6ff; margin-top: 0; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #161b22; padding: 30px; border-radius: 15px; width: 90%; max-width: 700px; border: 1px solid #30363d; }
+        pre { background: #0d1117; padding: 20px; border-radius: 8px; color: #79c0ff; overflow-x: auto; font-family: monospace; border: 1px solid #30363d; }
+        
+        button { background: #238636; color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 10px; }
+        button:hover { background: #2ea043; }
+        .close-btn { background: #da3633; }
     </style>
 </head>
 <body>
 
-<div class="container" id="login-box">
-    <h2>Đăng nhập Mini World</h2>
-    <input type="text" id="mw-id" placeholder="Nhập Mini World ID của bạn">
-    <button onclick="login()">Đăng nhập</button>
-</div>
+<header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Roblox_logo_2017.png" class="logo">
+    <h1>Ice Roblox Studio</h1>
+</header>
 
-<div class="container" id="code-box" style="display:none;">
-    <h2>Nhận Code Vật Phẩm</h2>
-    
-    <div class="item-box">
-        <img src="https://i.imgur.com/1000011410.png" alt="Ice Fan"> <p>Quạt Băng</p>
-        <code id="code1">icefan2026</code>
-        <button onclick="copyCode('code1')">Copy Code</button>
-    </div>
+<div class="grid" id="script-list"></div>
 
-    <div class="item-box">
-        <img src="https://i.imgur.com/1000011411.png" alt="Egg Fan"> <p>Quạt Trứng</p>
-        <code id="code2">eggfanupd2026</code>
-        <button onclick="copyCode('code2')">Copy Code</button>
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h2 id="m-title">Title</h2>
+        <pre id="m-code"></pre>
+        <button onclick="copyModal()">Copy Code</button>
+        <button class="close-btn" onclick="closeModal()">Đóng</button>
     </div>
 </div>
 
 <script>
-    function login() {
-        let id = document.getElementById('mw-id').value;
-        if(id) {
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('code-box').style.display = 'block';
-        } else {
-            alert("Vui lòng nhập ID!");
-        }
+    // Danh sách 10 Script "Huyền thoại"
+    const scripts = [
+        { title: "Kill Part (Bẫy chết)", code: "script.Parent.Touched:Connect(function(hit)\n  local hum = hit.Parent:FindFirstChild('Humanoid')\n  if hum then hum.Health = 0 end\nend)" },
+        { title: "Speed Boost (Tăng tốc)", code: "script.Parent.Touched:Connect(function(hit)\n  local char = hit.Parent\n  local hum = char:FindFirstChild('Humanoid')\n  if hum then hum.WalkSpeed = 50 end\nend)" },
+        { title: "Heal Part (Hồi máu)", code: "script.Parent.Touched:Connect(function(hit)\n  local hum = hit.Parent:FindFirstChild('Humanoid')\n  if hum then hum.Health = hum.MaxHealth end\nend)" },
+        { title: "Invisible Part (Tàng hình)", code: "script.Parent.Transparency = 1\nscript.Parent.CanCollide = false" },
+        { title: "Spin Part (Vật thể xoay)", code: "while task.wait() do\n  script.Parent.CFrame = script.Parent.CFrame * CFrame.fromEulerAnglesXYZ(0, 0.1, 0)\nend" },
+        { title: "Spawn Tool (Lấy đồ)", code: "local tool = game.ServerStorage.Sword\nlocal cloned = tool:Clone()\ncloned.Parent = game.Players.LocalPlayer.Backpack" },
+        { title: "Leaderstats (Lưu tiền)", code: "game.Players.PlayerAdded:Connect(function(player)\n  local stats = Instance.new('Folder', player)\n  stats.Name = 'leaderstats'\n  local money = Instance.new('IntValue', stats)\n  money.Name = 'Money'\nend)" },
+        { title: "Gravity Changer", code: "workspace.Gravity = 50" },
+        { title: "Random Color", code: "script.Parent.Touched:Connect(function()\n  script.Parent.Color = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))\nend)" },
+        { title: "Fire Part (Lửa)", code: "local fire = Instance.new('Fire', script.Parent)" }
+    ];
+
+    // Vẽ danh sách ra màn hình
+    const list = document.getElementById('script-list');
+    scripts.forEach((s, i) => {
+        list.innerHTML += `
+            <div class="script-card" onclick="openModal(${i})">
+                <h3>${s.title}</h3>
+                <p>Nhấn vào để xem và copy code...</p>
+            </div>
+        `;
+    });
+
+    function openModal(i) {
+        document.getElementById('m-title').innerText = scripts[i].title;
+        document.getElementById('m-code').innerText = scripts[i].code;
+        document.getElementById('modal').style.display = 'flex';
     }
 
-    function copyCode(id) {
-        let text = document.getElementById(id).innerText;
-        navigator.clipboard.writeText(text);
-        alert("Đã copy: " + text);
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+    function copyModal() {
+        const codeText = document.getElementById('m-code').innerText;
+        navigator.clipboard.writeText(codeText);
+        alert("Đã copy code vào bộ nhớ tạm!");
     }
 </script>
+
 </body>
 </html>
