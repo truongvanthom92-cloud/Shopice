@@ -2,84 +2,101 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Baddies Phone Pro</title>
+    <title>Baddies Phone Ultra</title>
     <style>
-        body { background: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .phone { width: 340px; height: 680px; background: #000; border-radius: 50px; border: 10px solid #222; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; }
-        .screen { padding: 30px; color: white; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        body { background: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Segoe UI', sans-serif; }
         
-        /* Grid App hiện đại */
-        .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 60px; }
-        .app-card { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
-        .app-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.3); }
+        /* Khung điện thoại */
+        .phone { width: 320px; height: 650px; background: #1e293b; border-radius: 45px; border: 6px solid #334155; position: relative; box-shadow: 0 0 50px rgba(124, 58, 237, 0.5); overflow: hidden; }
+        .status-bar { display: flex; justify-content: space-between; padding: 15px 25px; font-size: 14px; font-weight: bold; color: #cbd5e1; }
+        .screen { padding: 10px; }
+        
+        /* Grid App */
+        .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .app-icon { background: linear-gradient(135deg, #8b5cf6, #ec4899); width: 70px; height: 70px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; color: white; text-align: center; font-size: 11px; font-weight: bold; }
+        .app-icon:hover { transform: scale(0.9); }
 
-        /* Modal phong cách hiện đại */
-        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f8f9fa; color: #333; padding: 20px; box-sizing: border-box; }
-        .item-list { overflow-y: auto; height: 450px; }
-        .item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #ddd; }
+        /* Modal App */
+        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; color: white; padding: 20px; z-index: 10; box-sizing: border-box; }
+        .item { padding: 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; cursor: pointer; }
+        button { cursor: pointer; padding: 8px; border-radius: 5px; border: none; }
     </style>
 </head>
 <body>
 
 <div class="phone">
-    <div class="screen" id="home">
-        <h2 style="text-align: center; margin-top: 20px;">16:02</h2>
+    <div class="status-bar">
+        <span id="clock">00:00</span>
+        <span>⚡ 98%</span>
+    </div>
+
+    <div class="screen">
         <div class="app-grid">
-            <div class="app-card" onclick="openApp('bank')">💰<br>Bank</div>
-            <div class="app-card" onclick="openApp('shop')">🛍️<br>Diva Shop</div>
-            <div class="app-card" onclick="alert('Đang phát triển...')">📸<br>Camera</div>
-            <div class="app-card" onclick="alert('Không có thông báo mới!')">🔔<br>Alert</div>
+            <div class="app-icon" onclick="openApp('bank')">💰<br>Bank</div>
+            <div class="app-icon" onclick="openApp('shop')">🛍️<br>Diva</div>
+            <div class="app-icon" onclick="alert('Định vị: Ho Chi Minh City')">🗺️<br>Maps</div>
+            <div class="app-icon" onclick="alert('Playing: Chill Beats...')">🎵<br>Music</div>
+            <div class="app-icon" onclick="alert('Ghi chú đã lưu!')">📝<br>Notes</div>
+            <div class="app-icon" onclick="alert('Đã khóa cửa nhà!')">🔒<br>Home</div>
         </div>
     </div>
 
     <div id="bank" class="modal">
-        <button onclick="closeApp('bank')">✕ Đóng</button>
-        <h2>Baddies Bank</h2>
-        <div style="background:#2d3436; color:white; padding:20px; border-radius:15px;">
-            Số dư: <span id="balance">10,000,000</span> VNĐ
+        <button onclick="closeApp('bank')">← Back</button>
+        <h3>Baddies Bank</h3>
+        <div style="background: #334155; padding: 20px; border-radius: 10px; margin-top: 20px;">
+            Số dư hiện tại: <h2 id="balance">100,000,000</h2> VNĐ
         </div>
-        <input type="number" id="pay-amount" placeholder="Nhập số tiền..." style="width:100%; margin:20px 0; padding:10px;">
-        <button onclick="processPayment()" style="width:100%; background:green; color:white; padding:10px;">Xác nhận chuyển</button>
     </div>
 
     <div id="shop" class="modal">
-        <button onclick="closeApp('shop')">✕ Đóng</button>
+        <button onclick="closeApp('shop')">← Back</button>
         <h3>Diva Shopping</h3>
-        <input type="text" placeholder="Tìm sản phẩm..." style="width:100%; padding:8px;">
-        <div class="item-list">
-            <div class="item"><span>Son Môi - 500k</span> <button onclick="buyItem(500000)">Mua</button></div>
-            <div class="item"><span>Váy Dạ Hội - 2tr</span> <button onclick="buyItem(2000000)">Mua</button></div>
-            <div class="item"><span>Nước Hoa - 1tr</span> <button onclick="buyItem(1000000)">Mua</button></div>
-            <div class="item"><span>Voucher 50% - 0đ</span> <button onclick="alert('Đã nhận Voucher!')">Lấy</button></div>
-        </div>
+        <div class="item" onclick="buy('Son Môi', 500000)">💄 Son Môi <span>500k</span></div>
+        <div class="item" onclick="buy('Phấn Mắt', 300000)">🎨 Phấn Mắt <span>300k</span></div>
+        <div class="item" onclick="buy('Váy Đầm', 2000000)">👗 Váy Đầm <span>2tr</span></div>
+        <div class="item" onclick="buy('Dép', 200000)">👡 Dép <span>200k</span></div>
+        <div class="item" onclick="buy('Gấu Bông', 800000)">🧸 Gấu Bông <span>800k</span></div>
+        
+        <h4 style="color:#ec4899; margin-top:30px;">🧧 Voucher Giảm Giá</h4>
+        <div class="item" onclick="startMission()">🎟️ Giảm 20% (Làm nhiệm vụ)</div>
     </div>
 </div>
 
 <script>
-    let balance = 10000000;
-    let pendingPrice = 0;
+    let balance = 100000000;
+    let discount = 1;
+
+    // Thời gian thực
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
     function openApp(id) { document.getElementById(id).style.display = 'block'; }
     function closeApp(id) { document.getElementById(id).style.display = 'none'; }
 
-    function buyItem(price) {
-        pendingPrice = price;
-        alert("Đã thêm vào giỏ hàng! Qua app Bank để thanh toán.");
-        openApp('bank');
-        document.getElementById('pay-amount').value = price;
+    function startMission() {
+        if(confirm("Nhiệm vụ: Xem quảng cáo để nhận Voucher giảm 20%?")) {
+            alert("Nhiệm vụ hoàn thành! Voucher đã được kích hoạt.");
+            discount = 0.8;
+        }
     }
 
-    function processPayment() {
-        let amount = parseInt(document.getElementById('pay-amount').value);
-        if(amount === pendingPrice && balance >= amount) {
-            balance -= amount;
-            document.getElementById('balance').innerText = balance.toLocaleString();
-            alert("✅ Giao dịch thành công!");
-        } else {
-            alert("❌ Lỗi thanh toán!");
+    function buy(name, price) {
+        let finalPrice = price * discount;
+        if(confirm("Mua " + name + " với giá " + finalPrice.toLocaleString() + " VNĐ?")) {
+            if(balance >= finalPrice) {
+                balance -= finalPrice;
+                document.getElementById('balance').innerText = balance.toLocaleString();
+                alert("✅ Mua thành công " + name + "!");
+            } else {
+                alert("❌ Không đủ tiền!");
+            }
         }
     }
 </script>
 </body>
-                                                                </html>
-                                                                
+</html>
