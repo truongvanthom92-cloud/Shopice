@@ -2,62 +2,84 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Roblox Gift Simulation</title>
+    <title>Baddies Phone Pro</title>
     <style>
-        body { background: #E5E5E5; font-family: 'Segoe UI', sans-serif; }
-        .main-box { width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; border: 2px solid #BBB; }
-        .search-area { border-bottom: 2px solid #E5E5E5; padding-bottom: 15px; }
-        input { width: 90%; padding: 10px; border: 1px solid #CCC; border-radius: 5px; }
-        .avatar-box { margin: 15px 0; text-align: center; }
-        .gift-btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .package { display: flex; align-items: center; justify-content: space-between; border: 1px solid #EEE; padding: 10px; margin: 5px 0; }
-        .robux-icon { width: 30px; }
+        body { background: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .phone { width: 340px; height: 680px; background: #000; border-radius: 50px; border: 10px solid #222; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; }
+        .screen { padding: 30px; color: white; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        /* Grid App hiện đại */
+        .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 60px; }
+        .app-card { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .app-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.3); }
+
+        /* Modal phong cách hiện đại */
+        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f8f9fa; color: #333; padding: 20px; box-sizing: border-box; }
+        .item-list { overflow-y: auto; height: 450px; }
+        .item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
-<div class="main-box">
-    <h2>Tặng Robux cho bạn bè</h2>
-    <div class="search-area">
-        <input type="text" id="username" placeholder="Nhập tên người chơi..." onkeyup="findUser()">
-        <div id="avatar-container" class="avatar-box"></div>
+<div class="phone">
+    <div class="screen" id="home">
+        <h2 style="text-align: center; margin-top: 20px;">16:02</h2>
+        <div class="app-grid">
+            <div class="app-card" onclick="openApp('bank')">💰<br>Bank</div>
+            <div class="app-card" onclick="openApp('shop')">🛍️<br>Diva Shop</div>
+            <div class="app-card" onclick="alert('Đang phát triển...')">📸<br>Camera</div>
+            <div class="app-card" onclick="alert('Không có thông báo mới!')">🔔<br>Alert</div>
+        </div>
     </div>
 
-    <h3>Chọn gói quà tặng:</h3>
-    <div id="packages">
-        <div class="package"><img class="robux-icon" src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon.svg"> 5 Robux <button onclick="select(5)">Chọn</button></div>
-        <div class="package"><img class="robux-icon" src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon.svg"> 50 Robux <button onclick="select(50)">Chọn</button></div>
-        <div class="package"><img class="robux-icon" src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon.svg"> 10,000 Robux <button onclick="select(10000)">Chọn</button></div>
-        <div class="package"><img class="robux-icon" src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon.svg"> 100,000 Robux <button onclick="select(100000)">Chọn</button></div>
+    <div id="bank" class="modal">
+        <button onclick="closeApp('bank')">✕ Đóng</button>
+        <h2>Baddies Bank</h2>
+        <div style="background:#2d3436; color:white; padding:20px; border-radius:15px;">
+            Số dư: <span id="balance">10,000,000</span> VNĐ
+        </div>
+        <input type="number" id="pay-amount" placeholder="Nhập số tiền..." style="width:100%; margin:20px 0; padding:10px;">
+        <button onclick="processPayment()" style="width:100%; background:green; color:white; padding:10px;">Xác nhận chuyển</button>
     </div>
 
-    <input type="number" id="custom-amount" placeholder="Hoặc nhập số lượng tùy ý...">
-    <br><br>
-    <button class="gift-btn" onclick="confirmGift()">XÁC NHẬN TẶNG</button>
+    <div id="shop" class="modal">
+        <button onclick="closeApp('shop')">✕ Đóng</button>
+        <h3>Diva Shopping</h3>
+        <input type="text" placeholder="Tìm sản phẩm..." style="width:100%; padding:8px;">
+        <div class="item-list">
+            <div class="item"><span>Son Môi - 500k</span> <button onclick="buyItem(500000)">Mua</button></div>
+            <div class="item"><span>Váy Dạ Hội - 2tr</span> <button onclick="buyItem(2000000)">Mua</button></div>
+            <div class="item"><span>Nước Hoa - 1tr</span> <button onclick="buyItem(1000000)">Mua</button></div>
+            <div class="item"><span>Voucher 50% - 0đ</span> <button onclick="alert('Đã nhận Voucher!')">Lấy</button></div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Hàm tìm kiếm avatar thật từ Roblox API
-    function findUser() {
-        let user = document.getElementById('username').value;
-        if(user.length > 3) {
-            document.getElementById('avatar-container').innerHTML = 
-            `<img src="https://www.roblox.com/headshot-thumbnail/image?userId=1&width=150&height=150&format=png">
-             <p>Người chơi: ${user}</p>`;
-        }
+    let balance = 10000000;
+    let pendingPrice = 0;
+
+    function openApp(id) { document.getElementById(id).style.display = 'block'; }
+    function closeApp(id) { document.getElementById(id).style.display = 'none'; }
+
+    function buyItem(price) {
+        pendingPrice = price;
+        alert("Đã thêm vào giỏ hàng! Qua app Bank để thanh toán.");
+        openApp('bank');
+        document.getElementById('pay-amount').value = price;
     }
 
-    let selectedAmount = 0;
-    function select(amount) { selectedAmount = amount; alert("Đã chọn gói: " + amount); }
-
-    function confirmGift() {
-        let custom = document.getElementById('custom-amount').value;
-        let final = custom || selectedAmount;
-        let user = document.getElementById('username').value;
-        
-        if(!user) return alert("Vui lòng nhập tên người chơi!");
-        alert("Thông báo hệ thống: Bạn đã tặng thành công " + final + " Robux cho " + user + "!");
+    function processPayment() {
+        let amount = parseInt(document.getElementById('pay-amount').value);
+        if(amount === pendingPrice && balance >= amount) {
+            balance -= amount;
+            document.getElementById('balance').innerText = balance.toLocaleString();
+            alert("✅ Giao dịch thành công!");
+        } else {
+            alert("❌ Lỗi thanh toán!");
+        }
     }
 </script>
 </body>
-</html>
+                                                                </html>
+                                                                
