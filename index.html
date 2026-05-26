@@ -3,55 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloxtsar Value Checker</title>
+    <title>Bloxtsar Market - Ultimate</title>
     <style>
-        body { background-color: #0b0e14; color: white; font-family: sans-serif; margin: 0; padding: 10px; }
-        
-        /* Grid 2 cột */
-        .value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        /* Card vật phẩm */
-        .item-card { background: #1a1e28; border-radius: 12px; overflow: hidden; padding-bottom: 10px; }
-        
-        /* Nền Gradient cầu vồng phía trên ảnh */
-        .img-bg { 
-            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); 
-            height: 120px; display: flex; align-items: center; justify-content: center;
-        }
-        .item-img { width: 80%; }
-        
-        /* Thông tin */
+        body { background-color: #0b0e14; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
+        .value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .item-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
+        .img-bg { background: linear-gradient(135deg, #1f2937, #111827); height: 100px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
         .info { padding: 10px; }
-        .name { font-weight: bold; font-size: 1.1em; margin-bottom: 5px; }
-        .rarity { color: #ff69b4; font-size: 0.9em; font-weight: bold; }
-        .stat { font-size: 0.9em; color: #ccc; margin-top: 5px; }
-        .price { color: #fff; font-weight: bold; }
+        .name { font-weight: 700; font-size: 0.85rem; margin-bottom: 2px; color: #ffffff; }
+        .type-tag { font-size: 0.65rem; color: #60a5fa; margin-bottom: 5px; text-transform: uppercase; }
+        .rarity { color: #db2777; font-size: 0.7rem; font-weight: 600; margin-bottom: 8px; }
+        .stat { font-size: 0.7rem; display: flex; justify-content: space-between; margin-bottom: 2px; }
+        .price { color: #facc15; font-weight: 700; }
+        .rap-price { color: #4ade80; font-weight: 700; }
     </style>
 </head>
 <body>
 
-<h3>Vũ khí mới nhất</h3>
-<div class="value-grid">
-    <div class="item-card">
-        <div class="img-bg"><img src="item1.png" class="item-img" alt="Item"></div>
-        <div class="info">
-            <div class="name">Mèo gai Stanli</div>
-            <div class="rarity">Huyền thoại</div>
-            <div class="stat">Giá trị: 30.000</div>
-            <div class="stat">RAP: <span class="price">16.002</span></div>
-        </div>
-    </div>
+<h3>🔥 Tổng kho Vật phẩm</h3>
+<div class="value-grid" id="market-grid"></div>
+
+<script>
+    const items = [
+        // Vũ khí
+        { name: "Kiếm Ánh Trăng", type: "Vũ khí", rarity: "Huyền thoại", val: "45.000", rap: "42.100", icon: "⚔️" },
+        { name: "Búa Sét Thần", type: "Vũ khí", rarity: "Thần thoại", val: "310.000", rap: "305.000", icon: "🔨" },
+        // Skin
+        { name: "Skin Sát Thủ Đêm", type: "Skin", rarity: "Epic", val: "25.000", rap: "22.000", icon: "👤" },
+        { name: "Mèo Gai Stanli", type: "Skin", rarity: "Huyền thoại", val: "30.000", rap: "16.002", icon: "🐱" },
+        // Phong cách chiến đấu
+        { name: "Võ Hắc Ám", type: "Phong cách", rarity: "Mythic", val: "850.000", rap: "840.000", icon: "🔥" },
+        { name: "Quyền Pháp Băng", type: "Phong cách", rarity: "Rare", val: "50.000", rap: "48.000", icon: "❄️" },
+        // Thêm vài món linh tinh
+        { name: "Cung Băng Giá", type: "Vũ khí", rarity: "Huyền thoại", val: "85.000", rap: "82.300", icon: "🏹" },
+        { name: "Găng Tay Vô Cực", type: "Vũ khí", rarity: "Thần thoại", val: "500.000", rap: "495.000", icon: "🧤" },
+        { name: "Dáng Đứng Hoàng Gia", type: "Phong cách", rarity: "Legendary", val: "150.000", rap: "145.000", icon: "👑" },
+        { name: "Skin Robot X", type: "Skin", rarity: "Cổ đại", val: "400.000", rap: "390.000", icon: "🤖" }
+    ];
+
+    const grid = document.getElementById('market-grid');
     
-    <div class="item-card">
-        <div class="img-bg"><img src="item2.png" class="item-img" alt="Item"></div>
-        <div class="info">
-            <div class="name">Thuốc xịt y tế</div>
-            <div class="rarity">Huyền thoại</div>
-            <div class="stat">Giá trị: 30.000</div>
-            <div class="stat">RAP: <span class="price">19.766</span></div>
-        </div>
-    </div>
-</div>
+    items.forEach(item => {
+        grid.innerHTML += `
+        <div class="item-card">
+            <div class="img-bg">${item.icon}</div>
+            <div class="info">
+                <div class="type-tag">${item.type}</div>
+                <div class="name">${item.name}</div>
+                <div class="rarity">${item.rarity}</div>
+                <div class="stat"><span>Value</span> <span class="price">${item.val}</span></div>
+                <div class="stat"><span>RAP</span> <span class="rap-price">${item.rap}</span></div>
+            </div>
+        </div>`;
+    });
+</script>
 
 </body>
 </html>
