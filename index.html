@@ -1,62 +1,50 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloxtsar Market - Ultimate</title>
     <style>
-        body { background-color: #0b0e14; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; }
-        .value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .item-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
-        .img-bg { background: linear-gradient(135deg, #1f2937, #111827); height: 100px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-        .info { padding: 10px; }
-        .name { font-weight: 700; font-size: 0.85rem; margin-bottom: 2px; color: #ffffff; }
-        .type-tag { font-size: 0.65rem; color: #60a5fa; margin-bottom: 5px; text-transform: uppercase; }
-        .rarity { color: #db2777; font-size: 0.7rem; font-weight: 600; margin-bottom: 8px; }
-        .stat { font-size: 0.7rem; display: flex; justify-content: space-between; margin-bottom: 2px; }
-        .price { color: #facc15; font-weight: 700; }
-        .rap-price { color: #4ade80; font-weight: 700; }
+        body { margin: 0; background: #000; color: #ff69b4; font-family: 'Courier New', monospace; overflow: hidden; }
+        canvas { display: block; margin: auto; background: #222; border: 2px solid #ff69b4; }
+        #ui { position: absolute; top: 10px; left: 10px; pointer-events: none; }
     </style>
 </head>
 <body>
-
-<h3>🔥 Tổng kho Vật phẩm</h3>
-<div class="value-grid" id="market-grid"></div>
+    <div id="ui"><h2>YAN DEV 🌸 - [WASD] Di chuyển - [Space] Giết</h2></div>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
 
 <script>
-    const items = [
-        // Vũ khí
-        { name: "Kiếm Ánh Trăng", type: "Vũ khí", rarity: "Huyền thoại", val: "45.000", rap: "42.100", icon: "⚔️" },
-        { name: "Búa Sét Thần", type: "Vũ khí", rarity: "Thần thoại", val: "310.000", rap: "305.000", icon: "🔨" },
-        // Skin
-        { name: "Skin Sát Thủ Đêm", type: "Skin", rarity: "Epic", val: "25.000", rap: "22.000", icon: "👤" },
-        { name: "Mèo Gai Stanli", type: "Skin", rarity: "Huyền thoại", val: "30.000", rap: "16.002", icon: "🐱" },
-        // Phong cách chiến đấu
-        { name: "Võ Hắc Ám", type: "Phong cách", rarity: "Mythic", val: "850.000", rap: "840.000", icon: "🔥" },
-        { name: "Quyền Pháp Băng", type: "Phong cách", rarity: "Rare", val: "50.000", rap: "48.000", icon: "❄️" },
-        // Thêm vài món linh tinh
-        { name: "Cung Băng Giá", type: "Vũ khí", rarity: "Huyền thoại", val: "85.000", rap: "82.300", icon: "🏹" },
-        { name: "Găng Tay Vô Cực", type: "Vũ khí", rarity: "Thần thoại", val: "500.000", rap: "495.000", icon: "🧤" },
-        { name: "Dáng Đứng Hoàng Gia", type: "Phong cách", rarity: "Legendary", val: "150.000", rap: "145.000", icon: "👑" },
-        { name: "Skin Robot X", type: "Skin", rarity: "Cổ đại", val: "400.000", rap: "390.000", icon: "🤖" }
-    ];
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-    const grid = document.getElementById('market-grid');
-    
-    items.forEach(item => {
-        grid.innerHTML += `
-        <div class="item-card">
-            <div class="img-bg">${item.icon}</div>
-            <div class="info">
-                <div class="type-tag">${item.type}</div>
-                <div class="name">${item.name}</div>
-                <div class="rarity">${item.rarity}</div>
-                <div class="stat"><span>Value</span> <span class="price">${item.val}</span></div>
-                <div class="stat"><span>RAP</span> <span class="rap-price">${item.rap}</span></div>
-            </div>
-        </div>`;
+    let player = { x: 300, y: 200, color: "#ff69b4" };
+    let victim = { x: 100, y: 100, alive: true };
+    let blood = [];
+
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "w") player.y -= 10;
+        if (e.key === "s") player.y += 10;
+        if (e.key === "a") player.x -= 10;
+        if (e.key === "d") player.x += 10;
+        if (e.key === " ") { // Nút giết
+            if (Math.abs(player.x - victim.x) < 50 && victim.alive) {
+                victim.alive = false;
+                blood.push({x: victim.x, y: victim.y});
+                new Audio('https://www.myinstants.com/media/sounds/stab.mp3').play();
+            }
+        }
     });
-</script>
 
+    function draw() {
+        ctx.clearRect(0, 0, 600, 400);
+        // Vẽ máu
+        blood.forEach(b => { ctx.fillStyle = "red"; ctx.fillRect(b.x, b.y, 20, 20); });
+        // Vẽ nạn nhân
+        if(victim.alive) { ctx.fillStyle = "white"; ctx.fillRect(victim.x, victim.y, 30, 30); }
+        // Vẽ Yandere
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x, player.y, 30, 30);
+        requestAnimationFrame(draw);
+    }
+    draw();
+</script>
 </body>
 </html>
